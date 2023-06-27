@@ -49,12 +49,13 @@ public:
 	bool comparePassword(const MyString& input) const;
 
 	virtual User* clone() const = 0;
-	virtual void readFromBinaryFile(const MyString& fileName);         //there would be a separate file for every user named after them
-	virtual void saveToBinaryFile(const MyString& fileName);          //that is why the parameters of these functions are 
-	virtual void printInfo() const;                                   //names of files, not already opened streams
+	virtual void readFromBinaryFile(const MyString& fileName);        //there would be a separate file for every user named after them
+	virtual void saveToBinaryFile(const MyString& fileName);    //that is why the parameters of these functions are 
+	virtual void printInfo() const;                            //names of files, not already opened streams
 	virtual void generalInfo() const;
 	virtual void readFromStream(std::ifstream&);
 	virtual void saveToStream(std::ofstream&);
 };
+
 
 

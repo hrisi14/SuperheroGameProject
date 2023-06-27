@@ -97,7 +97,7 @@ void User::saveToBinaryFile(const MyString& fileName)
 		throw std::exception("Error! File failed to open!");
 	}
 
-	ofs.clear();    //clears file's content and saves all thÐµ updated information again 
+	ofs.clear();    //clears file's content and saves all thå updated information again 
 
 	name >> ofs;
 	surname >> ofs;
