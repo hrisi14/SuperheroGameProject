@@ -117,10 +117,10 @@ void Interface::commandAddNewUser()
 
         system->addNewUser(typeNumber, name, surname, userName, email, password);
     }
-    else
+    /*else
     {
         throw std::exception("Error! Only for administrators!");
-    }
+    }*/
 }
 void Interface::commandAddNewHero()
 {
@@ -254,7 +254,7 @@ Superhero Interface::enterHeroesData() const
     hero.setPowerSize(powerSize);
 
     std::cout << "Enter hero's price (1-50):" << std::endl;
-    double price;
+    unsigned int price;
     std::cin >> price;
     hero.setPrice(price);
 
@@ -455,32 +455,12 @@ void Interface::getUsersInput()
     }
 }
 void Interface::programExecution()
-{
-    MyString answer;
+{   
     do
     {
-        getUsersInput();
-        std::cout << std::endl;
-        std::cout << "Would you like to proceed? For our convenience, please type <Yes> or <No>." << std::endl;
-
-        std::cin >> answer;
-        if (answer == "No" || answer == "no")
-        {
-            clearConsole();
-            std::cout << "Thank you for your participation! We would be grateful to see you again at your earliest convenience!";
-            break;
-        }
-        else if (answer == "Yes" || answer == "yes")
-        {
-            clearConsole();
-            continue;
-        }
-        else
-        {
-            std::cout << "Please, enter a valid answer (<yes> or <no>)" << std::endl;
-            std::cin >> answer;
-        }
-    } while (!(answer == "No" && answer == "no"));
+        getUsersInput();       
+        
+    } while (1);
 }
 
 void Interface::clearConsole() const
