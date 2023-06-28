@@ -5,8 +5,8 @@ System* System::instance = nullptr;
 
 System::System()
 {
-	Administrator initialAdmin = Administrator("Default admin's name", "Default admin's surname", "Default admin", "default@gmail.com", "defaultPassword");
-	users.pushBack(&initialAdmin);   //creates a default admin (by hand) in the beginning of the game
+	Administrator* initialAdmin = new Administrator("Default admin's name", "Default admin's surname", "Default admin", "default@gmail.com", "Password12");
+	users.pushBack(initialAdmin);   //creates a default admin (by hand) in the beginning of the game
 }
 
 System* System::getInstance()
@@ -28,7 +28,7 @@ void System::free()
 }
 int System::getUserIndex(const MyString& username) const
 {
-	for (int i = 0; i < users.getSize(); i++)
+	for (unsigned i = 0; i < users.getSize(); i++)
 	{
 		if (users[i]->compareUsername(username))
 		{
@@ -44,7 +44,7 @@ System::~System()
 
 void System::addNewUser(unsigned typeNumber, const MyString& name, const MyString& surname, const MyString& userName, const MyString& email, const MyString& password)
 {
-	users.pushBack(factory(typeNumber, name, surname, userName, email, password));	
+    users.pushBack(factory(typeNumber, name, surname, userName, email, password));	
 }
 void System::deletePlayer(const MyString& playerName)
 {	
@@ -135,7 +135,7 @@ int System::findUserByName(const MyString& userName) const
 	}
 	for (unsigned int i = 0; i < users.getSize(); i++)
 	{
-		if (users[i]->compareUsername(userName))
+		if ((*users[i]).compareUsername(userName))
 		{
 			return i;
 		}
@@ -160,18 +160,26 @@ void System::logIn(const MyString& username, const MyString& password)
                 {
                     Player* player = (Player*)users[i];
                     player->incrementNumberOfMoves();
-
+					if (player->getNumberOfMoves() > 3)
+					{
+						std::cout << "Error! No more than three moves allowed!" << std::endl;
+						break;
+					}
                     if (player->getNumberOfMoves() % 2 == 0)
                     {
                         incrementPlayersMoneyInAPeriod();
                     }
                 }
-
+				return;
             }
-            throw std::invalid_argument("Error! Incorrect password!");
+			else
+			{
+				throw std::invalid_argument("Error! Incorrect password!");
+			}
         }
     }
-    throw std::invalid_argument("Error! Incorrect username!");
+	throw std::invalid_argument("Error! Incorrect username!");
+
 }
 
 
@@ -183,7 +191,9 @@ void System::signUp(unsigned typeNumber, const MyString& name, const MyString& s
 	}
 	else
 	{
-		users.pushBack(factory(typeNumber, name, surname, userName, email, password));
+		User* addedUser = factory(typeNumber, name, surname, userName, email, password);
+		users.pushBack(addedUser);
+		addedUser->saveToBinaryFile(name);
 	}
 }
 
@@ -359,12 +369,12 @@ void System::sortPlayersByScore(Vector<Player*> players, unsigned count)
 {	
 	unsigned int* playersMoney = new unsigned int[count];
 
-	for (int i = 0; i < count; i++)
+	for (unsigned i = 0; i < count; i++)
 	{
 		playersMoney[i] = (*players[i]).getMoney();
 	}
 
-	for (int i = 0; i < count - 1; i++)
+	for (unsigned i = 0; i < count - 1; i++)
 	{
 		int minMoneyIndex = i;
 
@@ -396,6 +406,11 @@ void System::saveRankingToFile(std::ofstream& ofs)
 	{
 		(*players[i]).saveToStream(ofs);
 	}	
+
+	for (size_t i = 0; i < count; i++)
+	{
+		delete players[i];
+	}
 }
 
 void System::readRankingFromFile(std::ifstream& ifs)
@@ -414,6 +429,7 @@ void System::readRankingFromFile(std::ifstream& ifs)
 	{
 		players[i].printInfo();
 	}
+	delete[] players;
 }
 
 void System::printDetailedInfo() const
